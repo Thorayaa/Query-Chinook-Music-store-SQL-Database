@@ -1,0 +1,55 @@
+/* Query 1*/
+SELECT c.CustomerId,
+       c.FirstName,
+       SUM(l.UnitPrice*l.Quantity) Customer_purchases
+FROM Customer c
+JOIN Invoice i ON c.CustomerId = i.CustomerId
+JOIN InvoiceLine l ON i.InvoiceId = l.InvoiceId
+GROUP BY 1,
+         2
+ORDER BY 3 DESC
+LIMIT 10;
+
+/* Query 2*/
+
+SELECT g.Name,
+       a.ArtistId,
+       a.Name,
+       COUNT(*) Songs_Number
+FROM Genre g
+JOIN Track t ON g.GenreId = t.GenreId
+JOIN Album ab ON t.AlbumId = ab.AlbumId
+JOIN Artist a ON a.ArtistId = ab.ArtistId
+GROUP BY 2,
+         3
+HAVING g.Name ='Rock'
+ORDER BY 4 DESC
+LIMIT 10;
+
+/* Query 3*/
+SELECT a.ArtistId,
+       a.Name,
+       SUM(l.UnitPrice * l.Quantity) total_spent_USD
+FROM Invoice i
+JOIN InvoiceLine l ON i.InvoiceId = l.InvoiceId
+JOIN Track t ON l.TrackId = t.TrackId
+JOIN Album ab ON ab.AlbumId = t.AlbumId
+JOIN Artist a ON a.ArtistId = ab.ArtistId
+GROUP BY 1,
+         2
+ORDER BY 3 DESC
+LIMIT 10;
+
+/* Query 4*/
+WITH t1 AS (SELECT c.Country, c.CustomerId, c.FirstName, c.LastName, SUM(l.UnitPrice * l.Quantity) total_spent
+FROM Customer c
+JOIN Invoice i
+ON c.CustomerId =i.CustomerId
+JOIN InvoiceLine l
+ON i.InvoiceId = l.InvoiceId
+GROUP BY 1,2
+ORDER BY 5 DESC)
+SELECT t1.Country, t1.FirstName, t1.LastName, MAX(total_spent) Most_customer_Spent
+FROM t1
+GROUP BY 1
+ORDER BY 4 DESC;
